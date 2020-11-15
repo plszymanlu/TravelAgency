@@ -1,23 +1,29 @@
-import { combineReducers, createStore } from 'redux';
-import initialStoreData from '../data/dataStore';
-import columnsReducer from './columnsRedux';
-import cardsReducer from './cardsRedux';
-import searchStringReducer from './searchStringRedux';
+import {combineReducers, createStore} from 'redux';
+import tripList from '../data/trips.json';
+
+import globalReducer from './globalRedux';
+import filtersReducer from './filtersRedux';
 
 // define initial state and shallow-merge initial data
 const initialState = {
-  app: initialStoreData.app,
-  lists: initialStoreData.lists,
-  columns: initialStoreData.columns,
-  cards: initialStoreData.cards,
-  searchString: '',
+  trips: tripList,
+  countries: {},
+  regions: {},
+  subregions: {},
+  tags: {},
+  filters: {
+    searchPhrase: '',
+    tags: [],
+    duration: {
+      from: 1,
+      to: 14,
+    },
+  },
 };
 
 // define reducers
 const reducers = {
-  columns: columnsReducer,
-  cards: cardsReducer,
-  searchString: searchStringReducer,
+  filters: filtersReducer,
 };
 
 // add blank reducers for initial state properties without reducers
@@ -27,8 +33,14 @@ Object.keys(initialState).forEach(item => {
   }
 });
 
-// merge all reducers
-const storeReducer = combineReducers(reducers);
+// combine reducers
+const combinedReducers = combineReducers(reducers);
+
+// merge all reducers with globalReducer
+const storeReducer = (state, action) => {
+  const modifiedState = globalReducer(state, action);
+  return combinedReducers(modifiedState, action);
+};
 
 // create store
 const store = createStore(
