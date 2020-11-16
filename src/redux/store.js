@@ -1,4 +1,4 @@
-import {combineReducers, createStore} from 'redux';
+import { combineReducers, createStore } from 'redux';
 import tripList from '../data/trips.json';
 
 import globalReducer from './globalRedux';
@@ -18,6 +18,11 @@ const initialState = {
       from: 1,
       to: 14,
     },
+  },
+  order: {
+    trip: null,
+    email: '',
+    options: {},
   },
 };
 
